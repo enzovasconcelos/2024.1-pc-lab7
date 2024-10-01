@@ -10,7 +10,7 @@ public class Sistema {
     public LinkedBlockingDeque<Pedido> pedidos;
     public Estoque estoque;
     public ScheduledExecutorService attEstoqueService;
-
+    public ScheduledExecutorService relatorioVendas;
 
     public Sistema(){
         this.estoque = new Estoque();

@@ -11,7 +11,8 @@ public class Cliente implements Runnable {
         while (true){
             System.out.println("Cliente chegou");
             try{
-                //Random random = new Random();
+                Random random = new Random();
+                
                 //List<String> itens = new ArrayList<>();
                 //int qnt = random.nextInt(itens.size()) + 1;
                 
@@ -22,4 +23,6 @@ public class Cliente implements Runnable {
             }
         }
     }
+
+
 }
