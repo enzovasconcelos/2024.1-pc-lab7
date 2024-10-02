@@ -1,8 +1,8 @@
 public class Item {
     Produto produto;
-    int quantidade;
+    Long quantidade;
 
-    public Item(Produto produto, int quantidade){
+    public Item(Produto produto, Long quantidade){
         this.produto = produto;
         this.quantidade = quantidade;
     }
@@ -11,7 +11,7 @@ public class Item {
         return this.produto;
     }
 
-    public int getQuantidade(){
+    public Long getQuantidade(){
         return this.quantidade;
     }
 

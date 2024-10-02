@@ -3,6 +3,7 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
+import java.util.concurrent.TimeUnit;
 
 public class Sistema {
 
@@ -29,7 +30,9 @@ public class Sistema {
             this.clientService.execute(new Cliente(this.idCliente, this.pedidos, this.idPedido));
             this.trabalhadorService.execute(new Trabalhador(this.pedidos, this.estoque));
         }
-
+        attEstoqueService.scheduleAtFixedRate(() -> {
+            estoque.run();
+        }, 10, 10, TimeUnit.SECONDS);
     }
 
     public static void main(String[] args){
