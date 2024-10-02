@@ -8,6 +8,8 @@ public class Estoque {
         this.estoque = new ConcurrentHashMap<>();
     }
 
-
+    public String gerarRelatorio() {
+        throw new RuntimeException("Not implemented yet!");
+    }
 
 }
