@@ -29,13 +29,15 @@ public class Sistema {
     }
 
     public void run(){
-        for(int i = 0; i < 5; i++){
-            this.clientService.execute(new Cliente(this.idCliente, this.pedidos, this.idPedido));
-            this.trabalhadorService.execute(new Trabalhador(this.pedidos, this.estoque));
-        }
+
         attEstoqueService.scheduleAtFixedRate(() -> {
             estoque.run();
-        }, 10, 10, TimeUnit.SECONDS);
+        }, 0, 20, TimeUnit.SECONDS);
+
+        for(int i = 0; i < 5; i++){
+            this.trabalhadorService.execute(new Trabalhador(this.pedidos, this.estoque));
+            this.clientService.execute(new Cliente(this.idCliente, this.pedidos, this.idPedido));
+        }
         relatorioVendas.scheduleWithFixedDelay(() -> {
             System.out.println(estoque.gerarRelatorio());
         }, DELAY_RELATORIO, DELAY_RELATORIO, DELAY_RELATORIO_UNIT);

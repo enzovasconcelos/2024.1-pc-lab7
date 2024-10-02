@@ -52,9 +52,15 @@ public class Estoque implements Runnable{
     }
 
     public void run(){
+        if (estoque.isEmpty()) {
+            for (long i = 1; i <= 10; i++) {
+                adicionarProduto(i, 20L);
+            }
+        }
         for (Long item : estoque.keySet()) {
             adicionarProduto(item, 20L);
         }
+        System.out.println("Estoque abastecido com 200 itens de 10 produtos");
     }
     
     public String gerarRelatorio() {

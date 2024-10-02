@@ -17,7 +17,6 @@ public class Cliente implements Runnable {
 
     public void run(){
         while (true){
-            System.out.println("Cliente chegou");
             try{
                 List<Item> itens = gerarItens();
                 Pedido pedido = new Pedido(idPedido.incrementAndGet(), idCliente, itens);
