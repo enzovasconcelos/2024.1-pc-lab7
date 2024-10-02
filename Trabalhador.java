@@ -1,5 +1,7 @@
 import java.util.List;
 import java.util.concurrent.LinkedBlockingDeque;
+import exceptions.ItemsNotAvailableException;
+import exceptions.ItemsNotFoundException;
 
 public class Trabalhador implements Runnable{
     public LinkedBlockingDeque<Pedido> pedidos;
@@ -15,23 +17,11 @@ public class Trabalhador implements Runnable{
         while (true) {
             try{
                 Pedido pedidoAtual = pedidos.take();
-                List<Item> listaItems = pedidoAtual.getItems();
-                Boolean remocaoComSucesso = true;
-
-                // removerItem(idItem, quantidade)
-                for(Item item: listaItems){
-                    remocaoComSucesso = this.estoque.removerProduto(item);
-
-                    if(!remocaoComSucesso){
-                        //TODO O pedido rejeitado pode ir eventualmente para uma lista de espera, caso não possa ser atendido.
-                        System.out.println("Pedido rejeitado pois não temos quantidade em estoque suficiente para o produto " + item.getProduto().getId());
-                        break;
-                    }
-                }
-                if(remocaoComSucesso){
-                    System.out.println("Pedido " + pedidoAtual.getId() + " do Cliente " + pedidoAtual.getIdCliente() + " Foi processado com sucesso!");
-                }
-            }catch(Exception e){
+                this.estoque.removerPedido(pedidoAtual);
+                System.out.println("Pedido processado com sucesso!");
+            } catch(ItemsNotAvailableException | ItemsNotFoundException  e) {
+                System.out.println(e.getMessage());
+            } catch(Exception e){
                 e.printStackTrace();
             }
             

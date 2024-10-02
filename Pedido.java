@@ -22,4 +22,9 @@ public class Pedido {
     public List<Item> getItems(){
         return this.itens;
     }
+    
+    public float calcularTotal() {
+        return itens.stream().map(Item::getProduto).map(Produto::getPreco)
+            .reduce(0f, (a, b) -> a + b);
+    }
 }
