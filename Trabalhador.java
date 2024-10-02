@@ -20,7 +20,7 @@ public class Trabalhador implements Runnable{
 
                 // removerItem(idItem, quantidade)
                 for(Item item: listaItems){
-                    remocaoComSucesso = this.estoque.removerProduto(item.getProduto().getId(), item.getQuantidade());
+                    remocaoComSucesso = this.estoque.removerProduto(item);
 
                     if(!remocaoComSucesso){
                         //TODO O pedido rejeitado pode ir eventualmente para uma lista de espera, caso não possa ser atendido.

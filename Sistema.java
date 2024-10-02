@@ -6,6 +6,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.TimeUnit;
 
 public class Sistema {
+    
+    public static int DELAY_RELATORIO = 30;
+    public static TimeUnit DELAY_RELATORIO_UNIT = TimeUnit.SECONDS;
 
     public ExecutorService clientService;
     public ExecutorService trabalhadorService;
@@ -22,7 +25,7 @@ public class Sistema {
         this.trabalhadorService = Executors.newFixedThreadPool(5);
         this.pedidos = new LinkedBlockingDeque<>();
         this.attEstoqueService = Executors.newSingleThreadScheduledExecutor();
-
+        this.relatorioVendas = Executors.newSingleThreadScheduledExecutor();
     }
 
     public void run(){
@@ -33,6 +36,9 @@ public class Sistema {
         attEstoqueService.scheduleAtFixedRate(() -> {
             estoque.run();
         }, 10, 10, TimeUnit.SECONDS);
+        relatorioVendas.scheduleWithFixedDelay(() -> {
+            System.out.println(estoque.gerarRelatorio());
+        }, DELAY_RELATORIO, DELAY_RELATORIO, DELAY_RELATORIO_UNIT);
     }
 
     public static void main(String[] args){
