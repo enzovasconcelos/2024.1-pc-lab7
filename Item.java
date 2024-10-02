@@ -14,5 +14,9 @@ public class Item {
     public int getQuantidade(){
         return this.quantidade;
     }
-    
+
+    public String toString(){
+        return "Produto: " + this.produto.getNome() + " - Quantidade: " + this.quantidade + " - Preço unitario: " + this.produto.getPreco();
+    }
+
 }

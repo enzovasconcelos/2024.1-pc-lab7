@@ -2,6 +2,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Sistema {
 
@@ -9,6 +10,8 @@ public class Sistema {
     public ExecutorService trabalhadorService;
     public LinkedBlockingDeque<Pedido> pedidos;
     public Estoque estoque;
+    public AtomicInteger idCliente = new AtomicInteger(0);
+    public AtomicInteger idPedido = new AtomicInteger(0);
     public ScheduledExecutorService attEstoqueService;
     public ScheduledExecutorService relatorioVendas;
 
@@ -24,7 +27,7 @@ public class Sistema {
     public void run(){
 
         for(int i = 0; i < 5; i++){
-            this.clientService.execute(new Cliente());
+            this.clientService.execute(new Cliente(this.idCliente, this.pedidos, this.idPedido));
             this.trabalhadorService.execute(new Trabalhador());
         }
 
