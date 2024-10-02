@@ -2,6 +2,7 @@ import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.LinkedBlockingDeque;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Sistema {
 
@@ -27,7 +28,9 @@ public class Sistema {
             this.clientService.execute(new Cliente());
             this.trabalhadorService.execute(new Trabalhador());
         }
-
+        attEstoqueService.scheduleAtFixedRate(() -> {
+            estoque.run();
+        }, 10, 10, TimeUnit.SECONDS);
     }
 
     public static void main(String[] args){
