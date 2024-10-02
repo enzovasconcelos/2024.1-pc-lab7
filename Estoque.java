@@ -35,7 +35,9 @@ public class Estoque implements Runnable{
         verificarDisponibilidadeItems(pedido);
         writeLock.lock();
         for (Item item : pedido.getItems()) {
-            estoque.remove(item.getProduto().getId());
+            AtomicLong quantidade = estoque.get(item.getProduto().getId());
+            Long quantidadeAtual = quantidade.get();
+            quantidade.set(quantidadeAtual - item.getQuantidade());
         }
         writeLock.unlock();
         vendidos.add(pedido);
@@ -58,28 +60,6 @@ public class Estoque implements Runnable{
             }
         }
     }
-
-    // TODO: Remover
-    /*public Boolean removerProduto(Item item){
-        writeLock.lock();
-        try{
-            Long id = item.getProduto().getId();
-            Long quantidade = item.getQuantidade();
-            if(estoque.containsKey(id)){
-                if(estoque.get(id).get() < quantidade){
-                    return false;
-                }else{
-                    estoque.get(id).addAndGet(-quantidade);
-                    return true;
-                }
-            }else{
-                System.out.println("Item não encontrado");
-                return false;
-            }
-        }finally{
-            writeLock.unlock();
-        }
-    }*/
 
     public void run(){
         if (estoque.isEmpty()) {
