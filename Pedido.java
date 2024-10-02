@@ -1,7 +1,6 @@
 import java.util.List;
 
 public class Pedido {
-
     private int idCliente;
     private int id;
     private List<Item> itens;
@@ -10,5 +9,17 @@ public class Pedido {
         this.id = id;
         this.idCliente = idCliente;
         this.itens = itens;
+    }
+
+    public int getId(){
+        return this.id;
+    }
+
+    public int getIdCliente(){
+        return this.idCliente;
+    }
+
+    public List<Item> getItems(){
+        return this.itens;
     }
 }

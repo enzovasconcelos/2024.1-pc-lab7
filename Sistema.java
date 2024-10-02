@@ -25,10 +25,9 @@ public class Sistema {
     }
 
     public void run(){
-
         for(int i = 0; i < 5; i++){
             this.clientService.execute(new Cliente(this.idCliente, this.pedidos, this.idPedido));
-            this.trabalhadorService.execute(new Trabalhador());
+            this.trabalhadorService.execute(new Trabalhador(this.pedidos, this.estoque));
         }
 
     }
