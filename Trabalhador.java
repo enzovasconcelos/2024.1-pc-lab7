@@ -1,15 +1,17 @@
 import java.util.List;
-import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.BlockingQueue;
 import exceptions.ItemsNotAvailableException;
 import exceptions.ItemsNotFoundException;
 
 public class Trabalhador implements Runnable{
-    public LinkedBlockingDeque<Pedido> pedidos;
+    private BlockingQueue<Pedido> pedidos;
     private Estoque estoque;
+    private List<Pedido> pendentes;
 
-    public Trabalhador( LinkedBlockingDeque<Pedido> pedidos, Estoque estoque){
+    public Trabalhador(BlockingQueue<Pedido> pedidos, Estoque estoque, List<Pedido> pendentes){
         this.pedidos = pedidos;
         this.estoque = estoque;
+        this.pendentes = pendentes;
     }
 
     @Override
@@ -17,15 +19,24 @@ public class Trabalhador implements Runnable{
         while (true) {
             try{
                 Pedido pedidoAtual = pedidos.take();
-                this.estoque.removerPedido(pedidoAtual);
-                System.out.println("Pedido processado com sucesso!");
-            } catch(ItemsNotAvailableException | ItemsNotFoundException  e) {
-                System.out.println(e.getMessage());
-            } catch(Exception e){
-                e.printStackTrace();
+                processarPedido(pedidoAtual);
             }
-            
+            catch(InterruptedException e){
+                e.printStackTrace();
+            } 
         }
-       
+    }
+    
+    private void processarPedido(Pedido pedido) {
+        try {
+            this.estoque.removerPedido(pedido);
+            System.out.println("Pedido processado com sucesso!");
+        } catch(ItemsNotAvailableException e) {
+            System.out.println(e.getMessage());
+        } catch(ItemsNotFoundException e){
+            pedido.incrementPrioridade();
+            pendentes.add(pedido);
+            System.out.println(e.getMessage());
+        }
     }
 }

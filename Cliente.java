@@ -1,15 +1,15 @@
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Cliente implements Runnable {
     private int idCliente;
-    public LinkedBlockingDeque<Pedido> pedidos;
+    private BlockingQueue<Pedido> pedidos;
     private AtomicInteger idPedido;
 
-    public Cliente(AtomicInteger id, LinkedBlockingDeque<Pedido> pedidos, AtomicInteger idPedido){
+    public Cliente(AtomicInteger id, BlockingQueue<Pedido> pedidos, AtomicInteger idPedido){
         this.idCliente = id.incrementAndGet();
         this.pedidos = pedidos;
         this.idPedido = idPedido;
@@ -58,7 +58,7 @@ public class Cliente implements Runnable {
             int index = random.nextInt(tempList.size());
             String nomeProduto = tempList.get(index);
             Produto produto = new Produto(nomeProduto);
-            Long quantidade = random.nextLong(4) + 1; //gera numeros aleatorios de 1 a 4
+            Long quantidade = random.nextLong() + 1; //gera numeros aleatorios de 1 a 4
             itensSelecionados.add(new Item(produto, quantidade));
             tempList.remove(index); // Remove o item selecionado da lista temporária
         }
