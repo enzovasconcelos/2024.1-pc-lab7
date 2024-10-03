@@ -50,15 +50,16 @@ public class Estoque implements Runnable{
             AtomicLong quantidade = estoque.get(item.getProduto().getId());
             String nomeItem = item.getProduto().getNome();
             int idCliente = pedido.getIdCliente();
+            int idPedido = pedido.getId();
             if (quantidade == null) {
                 rejeitados.add(pedido);
-                String message = String.format("Cliente %d teve pedido rejeitado. %s não cadastrado", 
-                                                idCliente, nomeItem);
+                String message = String.format("Cliente %d teve pedido %d rejeitado. %s não cadastrado", 
+                                                idCliente, idPedido, nomeItem);
                 throw new ItemsNotFoundException(message);
             }
             if (quantidade.get() < item.getQuantidade()) {
-                String msg = String.format("cliente %d teve pedido pendente. %s possui quantidade insuficiente", 
-                                            idCliente, nomeItem);
+                String msg = String.format("cliente %d teve pedido %d pendente. %s possui quantidade insuficiente", 
+                                            idCliente, idPedido, nomeItem);
                 throw new ItemsNotAvailableException(msg);
             }
         }
