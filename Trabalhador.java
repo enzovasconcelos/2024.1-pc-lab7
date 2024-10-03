@@ -30,7 +30,10 @@ public class Trabalhador implements Runnable{
     private void processarPedido(Pedido pedido) {
         try {
             this.estoque.removerPedido(pedido);
-            System.out.println("Pedido processado com sucesso!");
+            int idCliente = pedido.getIdCliente();
+            int idPedido = pedido.getId();
+            String msg = String.format("cliente %d processou pedido %d", idCliente, idPedido);
+            System.out.println(msg);
         } catch(ItemsNotAvailableException e) {
             System.out.println(e.getMessage());
         } catch(ItemsNotFoundException e){

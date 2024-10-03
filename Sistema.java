@@ -8,11 +8,14 @@ import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
 import java.util.List;
 import java.util.LinkedList;
+import java.net.*;
+import java.io.IOException;
 
 public class Sistema {
     
     public static int DELAY_RELATORIO = 30;
     public static TimeUnit DELAY_RELATORIO_UNIT = TimeUnit.SECONDS;
+    public static int port = 5050;
 
     public ExecutorService clientService;
     public ExecutorService trabalhadorService;
@@ -48,6 +51,21 @@ public class Sistema {
         relatorioVendas.scheduleWithFixedDelay(() -> {
             System.out.println(estoque.gerarRelatorio());
         }, DELAY_RELATORIO, DELAY_RELATORIO, DELAY_RELATORIO_UNIT);
+        
+        // listenConn();
+    }
+    
+    private void listenConn() {
+        try {
+            ServerSocket server = new ServerSocket(port);
+            System.out.println(String.format("Running on port", port));
+            for (;;) {
+                Socket conn = server.accept();
+                // clientService.submit(new Client(conn));
+            }
+        } catch(IOException e) {
+            System.err.println(e);
+        }
     }
     
     private void recolocarPedidosPendentes() {
