@@ -35,7 +35,6 @@ public class Estoque implements Runnable{
             Long quantidade = item.getQuantidade();
             if(estoque.containsKey(id)){
                 if(estoque.get(id).get() < quantidade){
-                    System.out.println("Quantidade insuficiente");
                     rejeitados.add(item);
                     return false;
                 }else{

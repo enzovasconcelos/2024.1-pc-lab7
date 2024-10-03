@@ -29,7 +29,7 @@ public class Trabalhador implements Runnable{
                     }
                 }
                 if(remocaoComSucesso){
-                    System.out.println("Pedido " + pedidoAtual.getId() + "do Cliente " + pedidoAtual.getIdCliente() + " Foi processado com sucesso!");
+                    System.out.println("Pedido " + pedidoAtual.getId() + " do Cliente " + pedidoAtual.getIdCliente() + " Foi processado com sucesso!");
                 }
             }catch(Exception e){
                 e.printStackTrace();
