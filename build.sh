@@ -1,1 +1,1 @@
-javac *.java -d bin
+javac server/*.java client/*.java server/exceptions/*.java -d bin
