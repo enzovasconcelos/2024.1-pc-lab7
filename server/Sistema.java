@@ -14,8 +14,10 @@ public class Sistema {
     public static int DELAY_RELATORIO = 30;
     public static TimeUnit DELAY_RELATORIO_UNIT = TimeUnit.SECONDS;
     public static int port = 5050;
+    public static int numberOfClients = 5;
 
     public ExecutorService clientService;
+    public ExecutorService handleClientService;
     public ExecutorService trabalhadorService;
     public BlockingQueue<Pedido> pedidos;
     public BlockingQueue<Pedido> pendentes;
@@ -29,6 +31,7 @@ public class Sistema {
         this.estoque = new Estoque();
         this.clientService = Executors.newFixedThreadPool(5);
         this.trabalhadorService = Executors.newFixedThreadPool(5);
+        this.handleClientService = Executors.newFixedThreadPool(numberOfClients);
         this.pedidos = new PriorityBlockingQueue<>();
         this.pendentes = new LinkedBlockingQueue<Pedido>();
         this.attEstoqueService = Executors.newSingleThreadScheduledExecutor();
@@ -50,16 +53,16 @@ public class Sistema {
             System.out.println(estoque.gerarRelatorio());
         }, DELAY_RELATORIO, DELAY_RELATORIO, DELAY_RELATORIO_UNIT);
         
-        // listenConn();
+        listenConn();
     }
     
     private void listenConn() {
         try {
             ServerSocket server = new ServerSocket(port);
-            System.out.println(String.format("Running on port", port));
+            System.out.println(String.format("Running on port %s", port));
             for (;;) {
                 Socket conn = server.accept();
-                // clientService.submit(new Client(conn));
+                handleClientService.submit(new HandleClient(conn, pedidos, idCliente, idPedido));
             }
         } catch(IOException e) {
             System.err.println(e);
