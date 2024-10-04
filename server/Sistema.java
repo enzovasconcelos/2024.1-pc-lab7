@@ -1,13 +1,11 @@
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.LinkedBlockingDeque;
+import java.util.concurrent.LinkedBlockingQueue;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.atomic.AtomicInteger;
 import java.util.concurrent.TimeUnit;
 import java.util.concurrent.BlockingQueue;
 import java.util.concurrent.PriorityBlockingQueue;
-import java.util.List;
-import java.util.LinkedList;
 import java.net.*;
 import java.io.IOException;
 
@@ -22,7 +20,7 @@ public class Sistema {
     public ExecutorService handleClientService;
     public ExecutorService trabalhadorService;
     public BlockingQueue<Pedido> pedidos;
-    public List<Pedido> pendentes;
+    public BlockingQueue<Pedido> pendentes;
     public Estoque estoque;
     public AtomicInteger idCliente = new AtomicInteger(0);
     public AtomicInteger idPedido = new AtomicInteger(0);
@@ -35,7 +33,7 @@ public class Sistema {
         this.trabalhadorService = Executors.newFixedThreadPool(5);
         this.handleClientService = Executors.newFixedThreadPool(numberOfClients);
         this.pedidos = new PriorityBlockingQueue<>();
-        this.pendentes = new LinkedList<Pedido>();
+        this.pendentes = new LinkedBlockingQueue<Pedido>();
         this.attEstoqueService = Executors.newSingleThreadScheduledExecutor();
         this.relatorioVendas = Executors.newSingleThreadScheduledExecutor();
     }
@@ -72,9 +70,9 @@ public class Sistema {
     }
     
     private void recolocarPedidosPendentes() {
-        for (Pedido pedido : pendentes) {
+        while (!pendentes.isEmpty()) {
             try {
-                pedidos.put(pedido);
+                pedidos.put(pendentes.take());
             } catch (InterruptedException e) {}
         }
     }

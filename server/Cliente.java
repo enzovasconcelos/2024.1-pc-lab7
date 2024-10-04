@@ -58,7 +58,7 @@ public class Cliente implements Runnable {
             int index = random.nextInt(tempList.size());
             String nomeProduto = tempList.get(index);
             Produto produto = new Produto(nomeProduto);
-            Long quantidade = random.nextLong() + 1; //gera numeros aleatorios de 1 a 4
+            Long quantidade = random.nextLong(6) + 1; //gera numeros aleatorios de 1 a 4
             itensSelecionados.add(new Item(produto, quantidade));
             tempList.remove(index); // Remove o item selecionado da lista temporária
         }

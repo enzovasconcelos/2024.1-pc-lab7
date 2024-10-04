@@ -1,50 +1,47 @@
 import java.util.concurrent.*;
 import java.util.concurrent.atomic.AtomicLong;
-import java.util.concurrent.locks.ReentrantReadWriteLock;
-import java.util.List;
-import java.util.LinkedList;
 import exceptions.ItemsNotAvailableException;
 import exceptions.ItemsNotFoundException;
 
 public class Estoque implements Runnable{
-    private final ReentrantReadWriteLock rwLock = new ReentrantReadWriteLock();
-    private final ReentrantReadWriteLock.WriteLock writeLock = rwLock.writeLock();
     public ConcurrentHashMap<Long, AtomicLong> estoque; //id e quantidade de itens
-    public List<Pedido> vendidos = new LinkedList<Pedido>();
-    public List<Pedido> rejeitados = new LinkedList<Pedido>();
+    public BlockingQueue<Pedido> vendidos = new LinkedBlockingQueue<Pedido>();
+    public BlockingQueue<Pedido> rejeitados = new LinkedBlockingQueue<Pedido>();
 
     public Estoque(){
         this.estoque = new ConcurrentHashMap<>();
     }
 
     public void adicionarProduto(Long id, Long quantidade){
-        writeLock.lock();
         try{
             if(estoque.containsKey(id)){
                 estoque.get(id).addAndGet(quantidade);
             }else{
                 estoque.put(id, new AtomicLong(quantidade));
             }
-        }finally{
-            writeLock.unlock();
+        } catch(Exception e) {
+            System.out.println(e);
         }
     }
     
     public void removerPedido(Pedido pedido) throws ItemsNotAvailableException, 
-                                                    ItemsNotFoundException {
+                                                    ItemsNotFoundException, InterruptedException {
         verificarDisponibilidadeItems(pedido);
-        writeLock.lock();
         for (Item item : pedido.getItems()) {
             AtomicLong quantidade = estoque.get(item.getProduto().getId());
             Long quantidadeAtual = quantidade.get();
             quantidade.set(quantidadeAtual - item.getQuantidade());
         }
-        writeLock.unlock();
-        vendidos.add(pedido);
+        try {
+
+            vendidos.put(pedido);
+        } catch(Exception e) {
+            System.out.println(e);
+        }
     }
     
     private void verificarDisponibilidadeItems(Pedido pedido) throws ItemsNotAvailableException, 
-                                                        ItemsNotFoundException{
+                                                        ItemsNotFoundException, InterruptedException{
 
         for (Item item : pedido.getItems()) {
             AtomicLong quantidade = estoque.get(item.getProduto().getId());
@@ -52,7 +49,7 @@ public class Estoque implements Runnable{
             int idCliente = pedido.getIdCliente();
             int idPedido = pedido.getId();
             if (quantidade == null) {
-                rejeitados.add(pedido);
+                rejeitados.put(pedido);
                 String message = String.format("Cliente %d teve pedido %d rejeitado. %s não cadastrado", 
                                                 idCliente, idPedido, nomeItem);
                 throw new ItemsNotFoundException(message);
@@ -72,7 +69,7 @@ public class Estoque implements Runnable{
             }
         }
         for (Long item : estoque.keySet()) {
-            adicionarProduto(item, 20L);
+            adicionarProduto(item, 30L);
         }
         System.out.println("Estoque abastecido com 200 itens de 10 produtos");
     }

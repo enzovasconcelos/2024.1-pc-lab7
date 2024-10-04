@@ -1,4 +1,3 @@
-import java.util.List;
 import java.util.concurrent.BlockingQueue;
 import exceptions.ItemsNotAvailableException;
 import exceptions.ItemsNotFoundException;
@@ -6,9 +5,9 @@ import exceptions.ItemsNotFoundException;
 public class Trabalhador implements Runnable{
     private BlockingQueue<Pedido> pedidos;
     private Estoque estoque;
-    private List<Pedido> pendentes;
+    private BlockingQueue<Pedido> pendentes;
 
-    public Trabalhador(BlockingQueue<Pedido> pedidos, Estoque estoque, List<Pedido> pendentes){
+    public Trabalhador(BlockingQueue<Pedido> pedidos, Estoque estoque, BlockingQueue<Pedido> pendentes){
         this.pedidos = pedidos;
         this.estoque = estoque;
         this.pendentes = pendentes;
@@ -27,18 +26,18 @@ public class Trabalhador implements Runnable{
         }
     }
     
-    private void processarPedido(Pedido pedido) {
+    private void processarPedido(Pedido pedido) throws InterruptedException {
         try {
             this.estoque.removerPedido(pedido);
             int idCliente = pedido.getIdCliente();
             int idPedido = pedido.getId();
-            String msg = String.format("cliente %d processou pedido %d", idCliente, idPedido);
+            String msg = String.format("pedido %d do cliente %d foi processado ", idPedido, idCliente);
             System.out.println(msg);
         } catch(ItemsNotAvailableException e) {
+            pedido.incrementPrioridade();
+            pendentes.put(pedido);
             System.out.println(e.getMessage());
         } catch(ItemsNotFoundException e){
-            pedido.incrementPrioridade();
-            pendentes.add(pedido);
             System.out.println(e.getMessage());
         }
     }
